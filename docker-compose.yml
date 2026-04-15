@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+
+  # ─────────────────────────────────────────
+  # PostgreSQL — our database
+  # ─────────────────────────────────────────
+  postgres:
+    image: postgres:15
+    container_name: fintrack-postgres
+    environment:
+      POSTGRES_DB: fintrack
+      POSTGRES_USER: fintrack_user
+      POSTGRES_PASSWORD: fintrack_pass
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # ─────────────────────────────────────────
+  # Zookeeper — required by Kafka to run
+  # ─────────────────────────────────────────
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: fintrack-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  # ─────────────────────────────────────────
+  # Kafka — our message broker
+  # ─────────────────────────────────────────
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: fintrack-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+# ─────────────────────────────────────────
+# Named volume — persists DB data
+# even after container restarts
+# ─────────────────────────────────────────
+volumes:
+  postgres_data:

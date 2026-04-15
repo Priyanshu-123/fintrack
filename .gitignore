@@ -1,0 +1,20 @@
+# Maven build output
+target/
+*.class
+*.jar
+
+# IntelliJ project files
+.idea/
+*.iml
+*.iws
+
+# Mac OS junk
+.DS_Store
+
+# Local environment secrets — NEVER commit this
+application-local.properties
+*.env
+
+# Log files
+*.log
+logs/
