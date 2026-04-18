@@ -14,6 +14,7 @@ target/
 # Local environment secrets — NEVER commit this
 application-local.properties
 *.env
+*.pem
 
 # Log files
 *.log
